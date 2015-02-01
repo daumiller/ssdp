@@ -18,3 +18,4 @@ SSDP
 * [SSDP::Consumer](doc/consumer.md) *(client)*
 
 ### Examples ###
+* [Roku device pause/play](example/roku_play_pause.rb)

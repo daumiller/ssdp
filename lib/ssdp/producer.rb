@@ -5,6 +5,7 @@ require 'ssdp'
 module SSDP
   class Producer
     attr_accessor :services
+    attr_accessor :uuid
 
     def initialize(options = {})
       @uuid = SecureRandom.uuid
@@ -47,6 +48,10 @@ module SSDP
 
       @services[type] = params
       send_notification type, params if @options[:notifier]
+    end
+
+    def remove_service(type)
+      @services.delete[type]
     end
 
     private
