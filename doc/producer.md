@@ -28,7 +28,7 @@ If `options` are provided, they can override global defaults (in [SSDP::Defaults
 
 Attribute accessor for registered services hash. Adding new service types should only be done through [`add_service`](#ssdp-producer-add_service), but removing services directly via `services.delete` is permitted.
 
-Each key-value-pair in services has the service type string as the key, and a parameter hash as the value.
+Each key-value-pair in services has the service type string as the key, and a parameter hash as the value (used as HTTP headers in search responses).
 
 <hr>
 ## <a name="ssdp-producer-uuid"></a> Producer.uuid ##
@@ -61,7 +61,7 @@ Options (set in [`new`](#ssdp-producer-new)):
 ## <a name="ssdp-producer-stop"></a> Producer.stop(bye_bye = true) ##
 `producer.stop(bye_bye = true)`
 
-Stop the search-response listener, and if currently running the periodic notifications thread.
+Stop the search-response listener, and if currently running, the periodic notifications thread.
 
 * `bye_bye`
   * If `true`, send a 'byebye' SSDP notification for each registered type, to indicate that the service is no longer available.
@@ -74,7 +74,7 @@ Add a registered service type, specifying a location or set of parameters (HTTP 
 
 * `type`
   * The service type string ('NT'/'ST' SSDP parameter) to register.
-* 'location_or_param_hash`
+* `location_or_param_hash`
   * If this parameter is a string, the HTTP response will receive 'AL' and 'LOCATION' headers set to this value.
   * If this parameter is a hash, all key-value-pairs will be added as HTTP response headers (*don't forget to set an 'AL' and/or 'LOCATION' value!*)
 
