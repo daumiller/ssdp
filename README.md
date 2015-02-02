@@ -19,3 +19,9 @@ SSDP
 
 ### Examples ###
 * [Roku device pause/play](example/roku_play_pause.rb)
+
+### Installation ###
+`gem install ssdp`
+
+### License ###
+[BSD 2-Clause](LICENSE)
