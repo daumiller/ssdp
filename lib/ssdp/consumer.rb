@@ -13,7 +13,7 @@ module SSDP
       }
     end
 
-    def search(options, &block)
+    def search(options = {}, &block)
       options = @options.merge options
       options[:callback] ||= block unless block.nil?
       fail "SSDP consumer async search missing callback." if (options[:synchronous] == false) && options[:callback].nil?
@@ -74,16 +74,26 @@ module SSDP
 
     def search_single(options)
       result = nil
+      found = false
 
       if options[:timeout]
-        ready = IO::select [@search_socket], nil, nil, options[:timeout]
-        if ready
-          message, producer = @search_socket.recvfrom options[:maxpack]
-          result = process_ssdp_packet message, producer
+        began = Time.now
+        remaining = options[:timeout]
+        while !found && remaining > 0
+          ready = IO::select [@search_socket], nil, nil, remaining
+          if ready
+            message, producer = @search_socket.recvfrom options[:maxpack]
+            result = process_ssdp_packet message, producer
+            found = options[:filter].nil? ? true : options[:filter].call(result)
+          end
+          remaining = options[:timeout] - (Time.now - began).to_i
         end
       else
-        message, producer = @search_socket.recvfrom options[:maxpack]
-        result = process_ssdp_packet message, producer
+        while !found
+          message, producer = @search_socket.recvfrom options[:maxpack]
+          result = process_ssdp_packet message, producer
+          found = options[:filter].nil? ? true : options[:filter].call(result)
+        end
       end
 
       if options[:synchronous]
@@ -102,7 +112,12 @@ module SSDP
         ready = IO::select [@search_socket], nil, nil, remaining
         if ready
           message, producer = @search_socket.recvfrom options[:maxpack]
-          responses << process_ssdp_packet(message, producer)
+          if options[:filter].nil?
+            responses << process_ssdp_packet(message, producer)
+          else
+            result = process_ssdp_packet message, producer
+            responses << result if options[:filter].call(result)
+          end
         end
         remaining -= (Time.now - start_time).to_i
       end

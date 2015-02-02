@@ -25,7 +25,7 @@ module SSDP
     end
 
     def stop(bye_bye = true)
-      @services.each { |type, params| send_bye_bye type, params } if bye_bye
+      @services.each { |type, params| send_bye_bye type, params } if bye_bye && @options[:notifier]
 
       if @listener[:thread] != nil
         @listener[:thread].exit
@@ -47,11 +47,11 @@ module SSDP
       end
 
       @services[type] = params
-      send_notification type, params if @options[:notifier]
+      send_notification type, params if @options[:notifier] && running?
     end
 
     def remove_service(type)
-      @services.delete[type]
+      @services.delete type
     end
 
     private

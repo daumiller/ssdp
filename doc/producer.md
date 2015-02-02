@@ -64,7 +64,7 @@ Options (set in [`new`](#ssdp-producer-new)):
 Stop the search-response listener, and if currently running, the periodic notifications thread.
 
 * `bye_bye`
-  * If `true`, send a 'byebye' SSDP notification for each registered type, to indicate that the service is no longer available.
+  * If `true`, **and `:notifier` is true**, send a 'byebye' SSDP notification for each registered type, to indicate that the service is no longer available.
 
 <hr>
 ## <a name="ssdp-producer-add_service"></a> Producer.add_service(type, location_or_param_hash) ##

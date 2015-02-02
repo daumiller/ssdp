@@ -20,16 +20,24 @@ Listen for SSDP notifications ('alive'/'byebye').
 If `options` are provided, they can override global defaults (in [SSDP::Defaults](ssdp.md)) for this instance (see individual calls for specific options).
 
 <hr>
-## <a name="ssdp-consumer-search"></a>Consumer.search(options, &block) ##
-`consumer.search(options, &block)`
+## <a name="ssdp-consumer-search"></a>Consumer.search(options = {}, &block) ##
+`consumer.search(options = {}, &block)`
 
 Perform an SSDP search request.
 
-* When searching `:first_only`, block is called with a single response, or nil if request timed out.
-* When searching without `:first_only`, block is called with array of all received responses after timeout (may be empty for no responses).
+##### Method of Return #####
+* `block` is only used for asynchronous requests.
+* Results will be directly returned for synchronous requests.
 
-Options:
+##### Format of Results #####
+* Searching with `:first_only` will return a single hash, or nil.
+* Searching without `:first_only` will return an array of hashes. One entry for each response received during the timeout period.
+* Each result is a hash with format `{:status, :params, :body}`, where:
+  * `:status` => HTTP Status/Command Line
+  * `:params` => hash of HTTP headers parsed into key-value pairs.
+  * `:body`   => HTTP body of response, if present.
 
+##### Options #####
 * `:service`
   * Service type string ('ST'/'NT' SSDP parameter) to search for.
   * **Should always be provided**.
@@ -47,6 +55,12 @@ Options:
   * If set, inhibit any warnings this call may otherwise display.
 * `:maxpack`
   * Maximum UDP packet size allowed to read (in bytes).
+* `:filter`
+  * A callable block to filter any results gathered.
+  * `bool filter({:status, :params, :body})`
+  * If provided:
+    * If `:first_only`, the first result passing the filter will be returned.
+    * Else, the set of all gathered results that pass the filter will be returned.
 
 <hr>
 ## <a name="ssdp-consumer-start_watching_type"></a>Consumer.start_watching_type(type, &block) ##
