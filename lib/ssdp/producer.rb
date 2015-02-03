@@ -20,12 +20,12 @@ module SSDP
     end
 
     def start
-      start_notifier if @options[:notifier]
-      start_listener
+      start_notifier if @notifier[:thread].nil? && @options[:notifier]
+      start_listener if @listener[:thread].nil?
     end
 
     def stop(bye_bye = true)
-      @services.each { |type, params| send_bye_bye type, params } if bye_bye && @options[:notifier]
+      was_running = running?
 
       if @listener[:thread] != nil
         @listener[:thread].exit
@@ -35,6 +35,8 @@ module SSDP
         @notifier[:thread].exit
         @notifier[:thread] = nil
       end
+
+      @services.each { |type, params| send_bye_bye type, params } if bye_bye && @options[:notifier] && was_running
     end
 
     def add_service(type, location_or_param_hash)
@@ -61,6 +63,12 @@ module SSDP
       return unless ssdp[:status].start_with? 'M-SEARCH * HTTP'
 
       return if ssdp[:params]['ST'].nil?
+
+      if @options[:respond_to_all] && ssdp[:params]['ST'].downcase == 'ssdp:all'
+        @services.each { |service, _| send_response service, consumer }
+        return
+      end
+
       return if @services[ssdp[:params]['ST']].nil?
       send_response ssdp[:params]['ST'], consumer
     end

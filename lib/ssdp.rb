@@ -6,18 +6,19 @@ require_relative 'ssdp/consumer'
 module SSDP
   DEFAULTS = {
     # Shared
-    :broadcast   => '239.255.255.250',
-    :bind        => '0.0.0.0',
-    :port        => 1900,
-    :maxpack     => 65_507,
+    :broadcast      => '239.255.255.250',
+    :bind           => '0.0.0.0',
+    :port           => 1900,
+    :maxpack        => 65_507,
     # Producer-Only
-    :interval    => 30,
-    :notifier    => true,
+    :interval       => 30,
+    :notifier       => true,
+    :respond_to_all => true,
     # Consumer-Only
-    :timeout     => 30,
-    :first_only  => false,
-    :synchronous => true,
-    :no_warnings => false
+    :timeout        => 30,
+    :first_only     => false,
+    :synchronous    => true,
+    :no_warnings    => false
   }
 
   HEADER_MATCH = /^([^:]+):\s*(.+)$/

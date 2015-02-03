@@ -38,6 +38,9 @@ Default option-value hash used by producer and consumer classes.
 * `:notifier`
   * **default value**: `true`
   * Whether to send 'alive' notifications.
+* `:respond_to_all`:
+  * **default value**: `true`
+  * Whether to respond to searches for 'ssdp:all'.
 
 #### Consumer ####
 * `:timeout`
