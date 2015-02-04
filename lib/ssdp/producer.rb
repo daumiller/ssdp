@@ -7,7 +7,7 @@ module SSDP
     attr_accessor :services
     attr_accessor :uuid
 
-    def initialize(options = {})
+    def initialize(options={})
       @uuid = SecureRandom.uuid
       @services = {}
       @listener = { :socket => nil, :thread => nil }
@@ -24,14 +24,14 @@ module SSDP
       start_listener if @listener[:thread].nil?
     end
 
-    def stop(bye_bye = true)
+    def stop(bye_bye=true)
       was_running = running?
 
-      if @listener[:thread] != nil
+      if @listener[:thread]
         @listener[:thread].exit
         @listener[:thread] = nil
       end
-      if @notifier[:thread] != nil
+      if @notifier[:thread]
         @notifier[:thread].exit
         @notifier[:thread] = nil
       end
@@ -123,7 +123,7 @@ module SSDP
       @listener[:socket] = SSDP.create_listener @options
       @listener[:thread] = Thread.new do
         begin
-          while true
+          loop do
             message, consumer = @listener[:socket].recvfrom @options[:maxpack]
             process_ssdp message, { :address => consumer[3], :port => consumer[1] } unless @services.count == 0
           end
@@ -135,12 +135,11 @@ module SSDP
 
     def start_notifier
       @notifier[:thread] = Thread.new do
-        while true
+        loop do
           sleep @options[:interval]
           @services.each { |type, params| send_notification type, params }
         end
       end
     end
-
   end
 end

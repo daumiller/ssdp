@@ -105,7 +105,7 @@ class TestProducer < MiniTest::Unit::TestCase
   def test_notifications_can_be_disabled
     seen_notifications = 0
     consumer = SSDP::Consumer.new
-    consumer.start_watching_type('test:minitest:test_notifications_can_be_disabled') { |ssdp| seen_notifications += 1 }
+    consumer.start_watching_type('test:minitest:test_notifications_can_be_disabled') { |_| seen_notifications += 1 }
 
     subject = SSDP::Producer.new :notifier => false, :interval => 1
     subject.start

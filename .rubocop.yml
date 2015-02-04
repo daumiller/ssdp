@@ -1,0 +1,44 @@
+# Documentation doesn't belong inside of source code.
+Documentation:
+  Enabled: false
+
+# Disabled Styles
+Style/AlignParameters:
+  Enabled: false
+Style/BracesAroundHashParameters:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+
+# Modified Styles
+Style/DotPosition:
+  EnforcedStyle: trailing
+Style/IndentHash:
+  EnforcedStyle: consistent
+Style/Semicolon:
+  AllowAsExpressionSeparator: true
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+# Disabled Metrics
+# "complexity"...
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockNesting:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false

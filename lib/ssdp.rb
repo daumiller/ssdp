@@ -61,5 +61,4 @@ module SSDP
     broadcaster
   end
   module_function :create_broadcaster
-
 end

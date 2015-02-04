@@ -3,7 +3,7 @@ require 'ssdp'
 
 module SSDP
   class Consumer
-    def initialize(options = {})
+    def initialize(options={})
       @options = SSDP::DEFAULTS.merge options
       @search_socket = SSDP.create_broadcaster
       @watch = {
@@ -13,13 +13,13 @@ module SSDP
       }
     end
 
-    def search(options = {}, &block)
+    def search(options={}, &block)
       options = @options.merge options
       options[:callback] ||= block unless block.nil?
-      fail "SSDP consumer async search missing callback." if (options[:synchronous] == false) && options[:callback].nil?
-      fail "SSDP consumer search accepting multiple responses must specify a timeout value." if (options[:first_only] == false) && (options[:timeout].to_i < 1)
-      warn "Warning: Calling SSDP search without a service specified." if options[:service].nil? && (options[:no_warnings] != true)
-      warn "Warning: Calling SSDP search without a timeout value." if (options[:timeout].to_i < 1) && (options[:no_warnings] != true)
+      fail 'SSDP consumer async search missing callback.' if (options[:synchronous] == false) && options[:callback].nil?
+      fail 'SSDP consumer search accepting multiple responses must specify a timeout value.' if (options[:first_only] == false) && (options[:timeout].to_i < 1)
+      warn 'Warning: Calling SSDP search without a service specified.' if options[:service].nil? && (options[:no_warnings] != true)
+      warn 'Warning: Calling SSDP search without a timeout value.' if (options[:timeout].to_i < 1) && (options[:no_warnings] != true)
 
       @search_socket.send compose_search(options), 0, options[:broadcast], options[:port]
 
@@ -37,12 +37,12 @@ module SSDP
 
     def stop_watching_type(type)
       @watch[:services].delete type
-      stop_watch if (@watch[:services].count == 0) && (@watch[:thread] != nil)
+      stop_watch if (@watch[:services].count == 0) && @watch[:thread]
     end
 
     def stop_watching_all
       @watch[:services] = {}
-      stop_watch if @watch[:thread] != nil
+      stop_watch if @watch[:thread]
     end
 
     private
@@ -52,7 +52,7 @@ module SSDP
               "Host: #{options[:broadcast]}:#{options[:port]}\n" \
               "Man: \"ssdp:discover\"\n"
       query += "ST: #{options[:service]}\n" if options[:service]
-      options[:params].each { |key, val| query += "#{key}: #{value}\n" } if options[:params]
+      options[:params].each { |key, val| query += "#{key}: #{val}\n" } if options[:params]
       query + "\n"
     end
 
@@ -80,7 +80,7 @@ module SSDP
         began = Time.now
         remaining = options[:timeout]
         while !found && remaining > 0
-          ready = IO::select [@search_socket], nil, nil, remaining
+          ready = IO.select [@search_socket], nil, nil, remaining
           if ready
             message, producer = @search_socket.recvfrom options[:maxpack]
             result = process_ssdp_packet message, producer
@@ -89,7 +89,7 @@ module SSDP
           remaining = options[:timeout] - (Time.now - began).to_i
         end
       else
-        while !found
+        until found
           message, producer = @search_socket.recvfrom options[:maxpack]
           result = process_ssdp_packet message, producer
           found = options[:filter].nil? ? true : options[:filter].call(result)
@@ -109,7 +109,7 @@ module SSDP
 
       while remaining > 0
         start_time = Time.now
-        ready = IO::select [@search_socket], nil, nil, remaining
+        ready = IO.select [@search_socket], nil, nil, remaining
         if ready
           message, producer = @search_socket.recvfrom options[:maxpack]
           if options[:filter].nil?
@@ -138,7 +138,7 @@ module SSDP
       @watch[:socket] = SSDP.create_listener @options
       @watch[:thread] = Thread.new do
         begin
-          while true
+          loop do
             message, producer = @watch[:socket].recvfrom @options[:maxpack]
             notification = process_ssdp_packet message, producer
             notification_type = notification[:params]['NT']
@@ -154,6 +154,5 @@ module SSDP
       @watch[:thread].exit
       @watch[:thread] = nil
     end
-
   end
 end
