@@ -1,5 +1,5 @@
 require 'socket'
-require 'SecureRandom'
+require 'securerandom'
 require 'ssdp'
 
 module SSDP
