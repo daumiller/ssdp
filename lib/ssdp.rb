@@ -48,6 +48,9 @@ module SSDP
     membership = IPAddr.new(options[:broadcast]).hton + IPAddr.new(options[:bind]).hton
     listener.setsockopt Socket::IPPROTO_IP, Socket::IP_ADD_MEMBERSHIP, membership
     listener.setsockopt Socket::SOL_SOCKET, Socket::SO_REUSEADDR, true
+    if defined? Socket::SO_REUSEPORT
+      listener.setsockopt Socket::SOL_SOCKET, Socket::SO_REUSEPORT, true
+    end
     listener.bind options[:bind], options[:port]
     listener
   end

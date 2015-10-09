@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.name                  = 'ssdp'
   spec.platform              = Gem::Platform::RUBY
   spec.require_paths         = ['lib']
-  spec.version               = '1.1.3'
+  spec.version               = '1.1.4'
   spec.license               = 'BSD 2-Clause'
   spec.summary               = 'SSDP client/server library.'
   spec.description           = 'SSDP client/server library. Server notify/part/respond; client search/listen.'
