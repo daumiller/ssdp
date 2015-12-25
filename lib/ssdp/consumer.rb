@@ -48,9 +48,15 @@ module SSDP
     private
 
     def compose_search(options)
+      if(options[:timeout].to_i > 1)
+        max_delay = options[:timeout].to_i - 1
+      else
+        max_delay = 1
+      end
       query = "M-SEARCH * HTTP/1.1\n"                            \
-              "Host: #{options[:broadcast]}:#{options[:port]}\n" \
-              "Man: \"ssdp:discover\"\n"
+              "HOST: #{options[:broadcast]}:#{options[:port]}\n" \
+              "MAN: \"ssdp:discover\"\n"                         \
+              "MX: #{max_delay}\n"
       query += "ST: #{options[:service]}\n" if options[:service]
       options[:params].each { |key, val| query += "#{key}: #{val}\n" } if options[:params]
       query + "\n"

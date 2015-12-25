@@ -85,7 +85,7 @@ module SSDP
 
     def send_notification(type, params)
       notify_body = "NOTIFY * HTTP/1.1\r\n"                                \
-                    "Host: #{@options[:broadcast]}:#{@options[:port]}\r\n" \
+                    "HOST: #{@options[:broadcast]}:#{@options[:port]}\r\n" \
                     "NTS: ssdp:alive\r\n"                                  \
                     "NT: #{type}\r\n"                                      \
                     "USN: uuid:#{@uuid}\r\n" +
@@ -97,7 +97,7 @@ module SSDP
 
     def send_bye_bye(type, params)
       bye_bye_body = "NOTIFY * HTTP/1.1\r\n"                                \
-                     "Host: #{@options[:broadcast]}:#{@options[:port]}\r\n" \
+                     "HOST: #{@options[:broadcast]}:#{@options[:port]}\r\n" \
                      "NTS: ssdp:byebye\r\n"                                 \
                      "NT: #{type}\r\n"                                      \
                      "USN: uuid:#{@uuid}\r\n" +
