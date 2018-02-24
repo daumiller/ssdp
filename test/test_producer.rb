@@ -2,7 +2,23 @@ require 'ssdp'
 require 'minitest/autorun'
 require 'minitest/pride'
 
-class TestProducer < MiniTest::Unit::TestCase
+class TestProducer < Minitest::Test
+  def dedupe_helper(results, param)
+    # some network configurations will result in duplicated broadcast packets...
+    unique, lookup = [], {}
+    results.each do |item|
+      test_value = item[:params][param]
+      if test_value.nil?
+        unique.push(item) # nothing we can do
+        next
+      end
+      next if lookup.key?(test_value)
+      lookup[test_value] = true
+      unique.push item
+    end
+    unique
+  end
+
   def test_running_is_accurate
     subject = SSDP::Producer.new :notifier => false
     subject.add_service 'test:minitest', 'telnet://localhost'
@@ -136,8 +152,8 @@ class TestProducer < MiniTest::Unit::TestCase
     sleep(1)
     consumer.stop_watching_all
 
-    assert_equal 3, seen_alive
-    assert_equal 1, seen_byebye
+    assert((seen_alive  > 0) && (seen_alive % 3).zero?)
+    assert((seen_byebye > 0) && (seen_byebye == (seen_alive / 3)))
   end
 
   def test_notification_interval_works
@@ -157,8 +173,8 @@ class TestProducer < MiniTest::Unit::TestCase
     sleep(1)
     consumer.stop_watching_all
 
-    assert_equal 3, seen_alive
-    assert_equal 1, seen_byebye
+    assert((seen_alive  > 0) && (seen_alive % 3).zero?)
+    assert((seen_byebye > 0) && (seen_byebye == (seen_alive / 3)))
   end
 
   def test_respond_to_all_works
@@ -169,6 +185,7 @@ class TestProducer < MiniTest::Unit::TestCase
 
     consumer = SSDP::Consumer.new :timeout => 2, :filter => proc { |x| x[:params]['AL'] == 'i_am_become_test' }
     results = consumer.search :service => 'ssdp:all'
+    results = dedupe_helper(results, 'ST')
     assert results
     assert_equal 2, results.count
     assert results[0][:params]['ST'].start_with? 'test:minitest:test_respond_to_all_works_'
@@ -182,6 +199,7 @@ class TestProducer < MiniTest::Unit::TestCase
 
     consumer = SSDP::Consumer.new :timeout => 2, :filter => proc { |x| x[:params]['AL'] == 'i_am_become_test' }
     results = consumer.search :service => 'ssdp:all'
+    results = dedupe_helper(results, 'ST')
     assert results
     assert_equal 0, results.count
 
