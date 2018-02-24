@@ -2,7 +2,23 @@ require 'ssdp'
 require 'minitest/autorun'
 require 'minitest/pride'
 
-class TestConsumer < MiniTest::Unit::TestCase
+class TestConsumer < Minitest::Test
+  def dedupe_helper(results, param)
+    # some network configurations will result in duplicated broadcast packets...
+    unique, lookup = [], {}
+    results.each do |item|
+      test_value = item[:params][param]
+      if test_value.nil?
+        unique.push(item) # nothing we can do
+        next
+      end
+      next if lookup.key?(test_value)
+      lookup[test_value] = true
+      unique.push item
+    end
+    unique
+  end
+
   def test_synchronous_search_works
     producer = SSDP::Producer.new :notifier => false
     producer.add_service 'test:minitest:test_synchronous_search_works', '...'
@@ -47,6 +63,8 @@ class TestConsumer < MiniTest::Unit::TestCase
     producer_one.stop
     producer_two.stop
 
+    results = dedupe_helper(results, 'AL')
+
     assert results
     assert_equal 2, results.count
     assert results[0][:params]['AL'] == 'test_one' || results[1][:params]['AL'] == 'test_one'
@@ -66,8 +84,7 @@ class TestConsumer < MiniTest::Unit::TestCase
     assert_equal 'gopher://test_filtered_single_search_works', result[:params]['AL']
 
     result = subject.search :service => 'ssdp:all',
-                            :filter => proc { |x| x[:params]['AL'] != 'gopher://test_filtered_single_search_works' }
-    producer.stop
+                            :filter => proc { |x| x[:params]['AL'] == 'gopher://test_filtered_single_search_works' }
     assert_nil result
   end
 
@@ -84,6 +101,8 @@ class TestConsumer < MiniTest::Unit::TestCase
                              :service    => 'ssdp:all',
                              :filter     => proc { |x| x[:params]['AL'] == '...' }
     producer.stop
+
+    results = dedupe_helper(results, 'ST')
 
     assert results
     assert_equal 2, results.count
@@ -147,7 +166,8 @@ class TestConsumer < MiniTest::Unit::TestCase
     producer.stop
 
     assert count_a > 0
-    assert_equal count_a + 2, count_b
+    assert count_b > 0
+    assert count_b > count_a
   end
 
   def test_stop_watch_all_works

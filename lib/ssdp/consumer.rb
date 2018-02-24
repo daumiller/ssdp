@@ -102,6 +102,7 @@ module SSDP
         end
       end
 
+      result = nil unless found
       if options[:synchronous]
         result
       else
