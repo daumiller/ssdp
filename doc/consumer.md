@@ -12,14 +12,15 @@ Listen for SSDP notifications ('alive'/'byebye').
 * [stop_watching_type](#ssdp-consumer-stop_watching_type)
 * [stop_watching_all](#ssdp-consumer-stop_watching_all)
 
-
 <hr>
+
 ## <a name="ssdp-consumer-new"></a>Consumer.new(options = {}) ##
 `SSDP::Consumer.new(options = {})`
 
 If `options` are provided, they can override global defaults (in [SSDP::Defaults](ssdp.md)) for this instance (see individual calls for specific options).
 
 <hr>
+
 ## <a name="ssdp-consumer-search"></a>Consumer.search(options = {}, &block) ##
 `consumer.search(options = {}, &block)`
 
@@ -63,6 +64,7 @@ Perform an SSDP search request.
     * Else, the set of all gathered results that pass the filter will be returned.
 
 <hr>
+
 ## <a name="ssdp-consumer-start_watching_type"></a>Consumer.start_watching_type(type, &block) ##
 `consumer.start_watching_type(type, &block)`
 
@@ -71,6 +73,7 @@ Register a service type ('ST'/'NT' SSDP parameter) to watch for, providing a cal
 If the watcher thread is not running, adding a type to watch for will start it.
 
 <hr>
+
 ## <a name="ssdp-consumer-stop_watching_type"></a>Consumer.stop_watching_type(type) ##
 `consumer.stop_watching_type(type)`
 
@@ -79,11 +82,10 @@ Unregister a service type that was being watched for notifications.
 If the watcher thread is running, removing the last watched type will stop it.
 
 <hr>
+
 ## <a name="ssdp-consumer-stop_watching_all"></a>Consumer.stop_watching_all ##
 `consumer.stop_watching_all`
 
 Convenience method to stop watching all previously registered service types.
 
 Will stop the watcher thread, if it is currently running.
-
-

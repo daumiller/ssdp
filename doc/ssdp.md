@@ -9,6 +9,7 @@ SSDP module details shouldn't be needed by most programs; but are available for 
 * [create_broadcaster](#ssdp-create_broadcaster)
 
 <hr>
+
 ## <a name="ssdp-defaults"></a>DEFAULTS ##
 `SSDP::DEFAULTS`
 
@@ -60,6 +61,7 @@ Default option-value hash used by producer and consumer classes.
   * Turning this on will disable those warnings.
 
 <hr>
+
 ## <a name="ssdp-parse_ssdp"></a>parse_ssdp(message) ##
 `SSDP.parse_ssdp(message)`
 
@@ -70,6 +72,7 @@ Parse a raw SSDP packet, returning `{:status, :params, :body}`, where
 * `:body` => HTTP content body
 
 <hr>
+
 ## <a name="ssdp-create_listener"></a>create_listener(options) ##
 `SSDP.create_listener(options)`
 
@@ -78,9 +81,8 @@ Return a UDP socket suitable for listening for SSDP broadcast messages.
 Options used: [`:broadcast`, `:port`, `:bind`]
 
 <hr>
+
 ## <a name="ssdp-create_broadcaster"></a>create_broadcaster ##
 `SSDP.create_broadcaster`
 
 Return a UDP socket suitable for broadcasting SSDP messages. 
-
-
