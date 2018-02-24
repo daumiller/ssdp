@@ -59,7 +59,7 @@ module SSDP
   def create_broadcaster
     broadcaster = UDPSocket.new
     broadcaster.setsockopt Socket::SOL_SOCKET, Socket::SO_BROADCAST, true
-    broadcaster.setsockopt :IPPROTO_IP, :IP_MULTICAST_TTL, 1
+    broadcaster.setsockopt Socket::IPPROTO_IP, Socket::IP_MULTICAST_TTL, 1
     broadcaster
   end
   module_function :create_broadcaster
