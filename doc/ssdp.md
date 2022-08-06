@@ -82,6 +82,8 @@ Options used: [`:broadcast`, `:port`, `:bind`]
 <hr>
 
 ## <a name="ssdp-create_broadcaster"></a>create_broadcaster ##
-`SSDP.create_broadcaster`
+`SSDP.create_broadcaster(options)`
 
 Return a UDP socket suitable for broadcasting SSDP messages. 
+
+Options used: [`:bind`]
