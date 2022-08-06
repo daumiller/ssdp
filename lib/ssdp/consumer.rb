@@ -5,7 +5,7 @@ module SSDP
   class Consumer
     def initialize(options={})
       @options = SSDP::DEFAULTS.merge options
-      @search_socket = SSDP.create_broadcaster options
+      @search_socket = SSDP.create_broadcaster @options
       @watch = {
         :socket   => nil,
         :thread   => nil,

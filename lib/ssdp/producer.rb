@@ -114,7 +114,7 @@ module SSDP
     end
 
     def send_broadcast_packet(body)
-      broadcaster = SSDP.create_broadcaster
+      broadcaster = SSDP.create_broadcaster @options
       broadcaster.send body, 0, @options[:broadcast], @options[:port]
       broadcaster.close
     end

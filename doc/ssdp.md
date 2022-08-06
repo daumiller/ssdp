@@ -26,8 +26,7 @@ Default option-value hash used by producer and consumer classes.
   * *Should not be overrode*.
 * `:bind`
   * **default value**: `'0.0.0.0'`
-  * Non-broadcast binding address.
-  * Default values selects any available.
+  * IP address to bind to. Set this to bind to a specific address/interface.
 * `:maxpack`
   * **default value**: `65_507`
   * Maximum UDP packet size to to read.
