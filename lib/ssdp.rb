@@ -56,10 +56,11 @@ module SSDP
   end
   module_function :create_listener
 
-  def create_broadcaster
+  def create_broadcaster(options)
     broadcaster = UDPSocket.new
     broadcaster.setsockopt Socket::SOL_SOCKET, Socket::SO_BROADCAST, true
     broadcaster.setsockopt Socket::IPPROTO_IP, Socket::IP_MULTICAST_TTL, 1
+    broadcaster.setsockopt Socket::IPPROTO_IP, Socket::IP_MULTICAST_IF, IPAddr.new(options[:bind]).hton
     broadcaster
   end
   module_function :create_broadcaster
