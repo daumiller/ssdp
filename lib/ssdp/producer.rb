@@ -1,6 +1,5 @@
 require 'socket'
 require 'securerandom'
-require 'ssdp'
 
 module SSDP
   class Producer
