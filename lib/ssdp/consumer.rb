@@ -1,5 +1,4 @@
 require 'socket'
-require 'ssdp'
 
 module SSDP
   class Consumer
